@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import { apiClient } from '@/lib/axios';
+import { apiClient, getShortLinkBaseUrl } from '@/lib/axios';
 import { useAuthStore } from '@/store/useAuthStore';
 
 export default function DashboardOverview() {
@@ -18,7 +18,7 @@ export default function DashboardOverview() {
         const totalLinks = urls.length;
         const totalClicks = urls.reduce((acc, curr) => acc + (curr.click_count || 0), 0);
         const sortedUrls = [...urls].sort((a, b) => (b.click_count || 0) - (a.click_count || 0));
-        const topLink = sortedUrls[0] ? `localhost:5000/${sortedUrls[0].short_code}` : 'N/A';
+        const topLink = sortedUrls[0] ? `${getShortLinkBaseUrl().replace(/^https?:\/\//, '')}/${sortedUrls[0].short_code}` : 'N/A';
         const topLinkClicks = sortedUrls[0] ? sortedUrls[0].click_count || 0 : 0;
         
         setAnalytics({
@@ -123,7 +123,7 @@ export default function DashboardOverview() {
               analytics?.urls?.map((url, i) => (
                 <div key={url.id}>
                   <div className="flex justify-between items-end mb-1">
-                    <span className="font-label-md text-label-md text-on-surface truncate pr-4">localhost:5000/{url.short_code}</span>
+                    <span className="font-label-md text-label-md text-on-surface truncate pr-4">{getShortLinkBaseUrl().replace(/^https?:\/\//, '')}/{url.short_code}</span>
                     <span className="font-label-md text-label-md text-on-surface-variant">{url.click_count || 0}</span>
                   </div>
                   <div className="w-full h-2 bg-surface-container-highest rounded-full overflow-hidden">

@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import { apiClient } from '@/lib/axios';
+import { apiClient, getShortLinkBaseUrl } from '@/lib/axios';
 
 export default function LinksPage() {
   const [links, setLinks] = useState([]);
@@ -58,7 +58,7 @@ export default function LinksPage() {
   };
 
   const handleCopy = (shortCode, id) => {
-    navigator.clipboard.writeText(`localhost:5000/${shortCode}`);
+    navigator.clipboard.writeText(`${getShortLinkBaseUrl()}/${shortCode}`);
     setCopiedId(id);
     setTimeout(() => setCopiedId(null), 2000);
   };
@@ -130,7 +130,7 @@ export default function LinksPage() {
             <span className="material-symbols-outlined text-on-surface bg-surface-variant p-1.5 rounded-md">public</span>
           </div>
           <div className="font-body-lg text-body-lg text-on-surface truncate pr-4">
-            {loading ? '...' : (topLink ? `localhost:5000/${topLink.short_code}` : 'N/A')}
+            {loading ? '...' : (topLink ? `${getShortLinkBaseUrl().replace(/^https?:\/\//, '')}/${topLink.short_code}` : 'N/A')}
           </div>
           <div className="flex items-center gap-1 mt-3 font-label-sm text-label-sm">
             <span className="text-primary bg-primary/10 px-2 py-0.5 rounded border border-primary/20">
@@ -170,7 +170,7 @@ export default function LinksPage() {
                   <tr key={link.id} className="border-b border-white/5 hover:bg-white/[0.03] transition-colors group">
                     <td className="py-4 px-stack-md">
                       <div className="flex items-center gap-2">
-                        <span className="text-primary font-label-md">localhost:5000/{link.short_code}</span>
+                        <span className="text-primary font-label-md">{getShortLinkBaseUrl().replace(/^https?:\/\//, '')}/{link.short_code}</span>
                         <button 
                           onClick={() => handleCopy(link.short_code, link.id)}
                           className="text-on-surface-variant opacity-0 group-hover:opacity-100 hover:text-white transition-all"
@@ -232,8 +232,8 @@ export default function LinksPage() {
               <div className="mb-4">
                 <label className="block font-label-sm text-label-sm text-on-surface mb-2">Custom Alias <span className="text-on-surface-variant font-normal">(Optional)</span></label>
                 <div className="flex items-center">
-                  <span className="bg-surface-container-highest border border-white/10 border-r-0 rounded-l-lg px-3 py-3 text-on-surface-variant font-body-md">
-                    localhost:5000/
+                  <span className="bg-surface-container-highest border border-white/10 border-r-0 rounded-l-lg px-3 py-3 text-on-surface-variant font-body-md truncate max-w-[200px]">
+                    {getShortLinkBaseUrl().replace(/^https?:\/\//, '')}/
                   </span>
                   <input 
                     type="text"

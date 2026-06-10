@@ -9,6 +9,10 @@ export const apiClient = axios.create({
   },
 });
 
+export const getShortLinkBaseUrl = () => {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+  return apiUrl.replace('/api', '');
+};
 apiClient.interceptors.request.use((config) => {
   const token = Cookies.get('token');
   if (token) {

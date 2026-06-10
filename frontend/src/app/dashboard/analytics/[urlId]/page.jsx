@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { apiClient } from '@/lib/axios';
+import { apiClient, getShortLinkBaseUrl } from '@/lib/axios';
 
 export default function AnalyticsPage() {
   const { urlId } = useParams();
@@ -16,7 +16,7 @@ export default function AnalyticsPage() {
         const data = res.data.data;
         
         setAnalytics({
-          shortUrl: `localhost:5000/${data.shortCode}`,
+          shortUrl: `${getShortLinkBaseUrl().replace(/^https?:\/\//, '')}/${data.shortCode}`,
           originalUrl: data.originalUrl,
           totalClicks: data.totalClicks || 0,
           recentClicks: data.recentClicks || 0,
