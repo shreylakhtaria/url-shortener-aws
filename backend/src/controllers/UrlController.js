@@ -5,9 +5,9 @@ const urlService = require('../services/UrlService');
 class UrlController extends BaseController {
   async create(req, res) {
     try {
-      const { originalUrl, customAlias } = req.body;
+      const { originalUrl, customAlias, tags } = req.body;
       const userId = req.user.id;
-      const result = await urlService.createShortUrl(userId, originalUrl, customAlias);
+      const result = await urlService.createShortUrl(userId, originalUrl, customAlias, tags || []);
       return this.handleSuccess(res, result, 'URL shortened successfully', 201);
     } catch (error) {
       return this.handleError(error, res, 'Url.create');

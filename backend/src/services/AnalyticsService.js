@@ -91,6 +91,33 @@ class AnalyticsService {
       topLocations: formatTopMap(topLocationsMap)
     };
   }
+  async getUrlAnalytics(id, userId) {
+    const url = await Url.findOne({
+      where: { id, user_id: userId }
+    });
+    
+    if (!url) {
+      throw { statusCode: 404, isOperational: true, message: 'URL not found or unauthorized' };
+    }
+
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    const recentClicks = await UrlClick.count({
+      where: {
+        url_id: id,
+        clicked_at: { [Op.gte]: thirtyDaysAgo }
+      }
+    });
+
+    return {
+      id: url.id,
+      shortCode: url.short_code,
+      originalUrl: url.original_url,
+      totalClicks: url.click_count || 0,
+      recentClicks: recentClicks
+    };
+  }
 }
 
 module.exports = new AnalyticsService();

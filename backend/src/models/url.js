@@ -35,6 +35,11 @@ module.exports = (sequelize, DataTypes) => {
     expires_at: {
       type: DataTypes.DATE,
       allowNull: true
+    },
+    tags: {
+      type: DataTypes.JSON,
+      allowNull: true,
+      defaultValue: []
     }
   }, {
     sequelize,

@@ -12,6 +12,10 @@ export default function LinksPage() {
   const [createError, setCreateError] = useState('');
   const [copiedId, setCopiedId] = useState(null);
   
+  // Tag States
+  const [newTags, setNewTags] = useState([]);
+  const [currentTagInput, setCurrentTagInput] = useState('');
+  const [selectedFilterTag, setSelectedFilterTag] = useState(null);
   // Computed stats
   const totalLinks = links.length;
   const totalClicks = links.reduce((acc, curr) => acc + (curr.click_count || 0), 0);
@@ -39,7 +43,7 @@ export default function LinksPage() {
     setCreateLoading(true);
     setCreateError('');
     try {
-      const payload = { originalUrl: newUrl };
+      const payload = { originalUrl: newUrl, tags: newTags };
       if (customAlias.trim()) {
         payload.customAlias = customAlias.trim();
       }
@@ -49,6 +53,8 @@ export default function LinksPage() {
       setIsModalOpen(false);
       setNewUrl('');
       setCustomAlias('');
+      setNewTags([]);
+      setCurrentTagInput('');
     } catch (err) {
       console.error(err);
       setCreateError(err.response?.data?.message || 'Failed to create link');
@@ -62,6 +68,29 @@ export default function LinksPage() {
     setCopiedId(id);
     setTimeout(() => setCopiedId(null), 2000);
   };
+
+  const handleTagInputKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const tag = currentTagInput.trim();
+      if (tag && !newTags.includes(tag) && newTags.length < 5) {
+        setNewTags([...newTags, tag]);
+        setCurrentTagInput('');
+      }
+    }
+  };
+
+  const removeTag = (tagToRemove) => {
+    setNewTags(newTags.filter(tag => tag !== tagToRemove));
+  };
+
+  // Extract all unique tags for the filter bar
+  const allUniqueTags = Array.from(new Set(links.flatMap(link => link.tags || []))).sort();
+
+  // Filter links based on selection
+  const displayedLinks = selectedFilterTag 
+    ? links.filter(link => (link.tags || []).includes(selectedFilterTag))
+    : links;
 
   return (
     <>
@@ -142,8 +171,35 @@ export default function LinksPage() {
 
       {/* Links Table */}
       <div className="glass-card border border-white/10 rounded-xl overflow-hidden">
-        <div className="p-stack-md border-b border-white/5 flex justify-between items-center bg-white/[0.02]">
-          <h3 className="font-headline-md text-headline-md text-on-surface text-lg">All Links</h3>
+        <div className="p-stack-md border-b border-white/5 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 bg-white/[0.02]">
+          <h3 className="font-headline-md text-headline-md text-on-surface text-lg shrink-0">All Links</h3>
+          {allUniqueTags.length > 0 && (
+            <div className="flex gap-2 overflow-x-auto pb-2 sm:pb-0 scrollbar-hide">
+              <button
+                onClick={() => setSelectedFilterTag(null)}
+                className={`px-3 py-1 rounded-full font-label-sm text-sm border whitespace-nowrap transition-colors ${
+                  selectedFilterTag === null 
+                    ? 'bg-primary text-on-primary border-primary' 
+                    : 'bg-transparent text-on-surface-variant border-white/10 hover:border-white/30 hover:text-on-surface'
+                }`}
+              >
+                All
+              </button>
+              {allUniqueTags.map(tag => (
+                <button
+                  key={tag}
+                  onClick={() => setSelectedFilterTag(tag)}
+                  className={`px-3 py-1 rounded-full font-label-sm text-sm border whitespace-nowrap transition-colors ${
+                    selectedFilterTag === tag 
+                      ? 'bg-primary text-on-primary border-primary' 
+                      : 'bg-transparent text-on-surface-variant border-white/10 hover:border-white/30 hover:text-on-surface'
+                  }`}
+                >
+                  {tag}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
@@ -161,12 +217,14 @@ export default function LinksPage() {
                 <tr>
                   <td colSpan="4" className="py-8 text-center text-on-surface-variant">Loading links...</td>
                 </tr>
-              ) : links.length === 0 ? (
+              ) : displayedLinks.length === 0 ? (
                 <tr>
-                  <td colSpan="4" className="py-8 text-center text-on-surface-variant">No links found. Create one to get started!</td>
+                  <td colSpan="5" className="py-8 text-center text-on-surface-variant">
+                    {selectedFilterTag ? `No links found for tag "${selectedFilterTag}".` : "No links found. Create one to get started!"}
+                  </td>
                 </tr>
               ) : (
-                links.map((link) => (
+                displayedLinks.map((link) => (
                   <tr key={link.id} className="border-b border-white/5 hover:bg-white/[0.03] transition-colors group">
                     <td className="py-4 px-stack-md">
                       <div className="flex items-center gap-2">
@@ -182,8 +240,19 @@ export default function LinksPage() {
                         </button>
                       </div>
                     </td>
-                    <td className="py-4 px-stack-md text-on-surface-variant truncate max-w-[200px] md:max-w-[400px]">
-                      {link.original_url}
+                    <td className="py-4 px-stack-md">
+                      <div className="text-on-surface-variant truncate max-w-[200px] md:max-w-[400px] mb-1">
+                        {link.original_url}
+                      </div>
+                      {link.tags && link.tags.length > 0 && (
+                        <div className="flex flex-wrap gap-1.5 mt-1">
+                          {link.tags.map((tag, idx) => (
+                            <span key={idx} className="px-2 py-0.5 bg-surface-variant text-on-surface-variant rounded font-label-sm text-[10px]">
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      )}
                     </td>
                     <td className="py-4 px-stack-md text-right font-label-sm text-on-surface">{link.click_count?.toLocaleString() || 0}</td>
                     <td className="py-4 px-stack-md">
@@ -242,6 +311,32 @@ export default function LinksPage() {
                     value={customAlias}
                     onChange={(e) => setCustomAlias(e.target.value)}
                   />
+                </div>
+              </div>
+              <div className="mb-4">
+                <label className="block font-label-sm text-label-sm text-on-surface mb-2">Tags <span className="text-on-surface-variant font-normal">(Optional)</span></label>
+                <div className="w-full bg-surface-container border border-white/10 rounded-lg p-2 flex flex-wrap gap-2 items-center focus-within:border-primary transition-colors">
+                  {newTags.map(tag => (
+                    <span key={tag} className="flex items-center gap-1 bg-surface-variant text-on-surface px-2 py-1 rounded font-label-sm">
+                      {tag}
+                      <button type="button" onClick={() => removeTag(tag)} className="text-on-surface-variant hover:text-error transition-colors">
+                        <span className="material-symbols-outlined text-[14px]">close</span>
+                      </button>
+                    </span>
+                  ))}
+                  {newTags.length < 5 && (
+                    <input 
+                      type="text"
+                      placeholder={newTags.length === 0 ? "e.g. Marketing, Social (Press Enter to add)" : "Add tag..."}
+                      className="flex-1 min-w-[150px] bg-transparent border-none text-on-surface font-body-sm focus:outline-none focus:ring-0 px-2 py-1"
+                      value={currentTagInput}
+                      onChange={(e) => setCurrentTagInput(e.target.value)}
+                      onKeyDown={handleTagInputKeyDown}
+                    />
+                  )}
+                </div>
+                <div className="text-on-surface-variant font-body-sm text-[11px] mt-1">
+                  {newTags.length}/5 tags added. Press Enter to confirm a tag.
                 </div>
               </div>
               {createError && (

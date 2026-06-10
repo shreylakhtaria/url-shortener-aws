@@ -3,7 +3,7 @@ const { nanoid } = require('nanoid');
 const urlRepository = require('../repositories/UrlRepository');
 
 class UrlService {
-  async createShortUrl(userId, originalUrl, customAlias = null) {
+  async createShortUrl(userId, originalUrl, customAlias = null, tags = []) {
     if (!originalUrl) {
       throw { statusCode: 400, isOperational: true, message: 'Original URL is required' };
     }
@@ -32,7 +32,8 @@ class UrlService {
     return await urlRepository.create({
       user_id: userId,
       original_url: originalUrl,
-      short_code: shortCode
+      short_code: shortCode,
+      tags: tags
     });
   }
 

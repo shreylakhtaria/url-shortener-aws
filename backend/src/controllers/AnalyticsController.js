@@ -11,6 +11,16 @@ class AnalyticsController extends BaseController {
       return this.handleError(res, error, 'Failed to fetch analytics');
     }
   }
+  async getUrlStats(req, res) {
+    try {
+      const { id } = req.params;
+      const userId = req.user.id;
+      const data = await analyticsService.getUrlAnalytics(id, userId);
+      return this.handleSuccess(res, data, 'URL analytics fetched successfully');
+    } catch (error) {
+      return this.handleError(res, error, 'Failed to fetch URL analytics');
+    }
+  }
 }
 
 module.exports = new AnalyticsController();
