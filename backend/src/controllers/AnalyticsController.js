@@ -8,7 +8,7 @@ class AnalyticsController extends BaseController {
       const data = await analyticsService.getAccountAnalytics(userId);
       return this.handleSuccess(res, data, 'Analytics fetched successfully');
     } catch (error) {
-      return this.handleError(res, error, 'Failed to fetch analytics');
+      return this.handleError(error, res, 'Analytics.getDashboardStats');
     }
   }
   async getUrlStats(req, res) {
@@ -18,7 +18,7 @@ class AnalyticsController extends BaseController {
       const data = await analyticsService.getUrlAnalytics(id, userId);
       return this.handleSuccess(res, data, 'URL analytics fetched successfully');
     } catch (error) {
-      return this.handleError(res, error, 'Failed to fetch URL analytics');
+      return this.handleError(error, res, 'Analytics.getUrlStats');
     }
   }
 }
