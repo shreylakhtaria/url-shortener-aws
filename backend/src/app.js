@@ -8,9 +8,22 @@ const analyticsRoutes = require('./routes/analyticsRoutes');
 const redirectRoutes = require('./routes/redirectRoutes');
 
 const app = express();
-f
+
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  'http://localhost:3000',
+  'https://main.d3iw2fblay2xms.amplifyapp.com' // Hardcoded fallback just in case
+];
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: function(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.error(`CORS Error: Origin ${origin} not in allowed list [${allowedOrigins.join(', ')}]`);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
 }));
 app.use(express.json());

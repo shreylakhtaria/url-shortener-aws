@@ -24,7 +24,7 @@ class AuthController extends BaseController {
   async verifyOtp(req, res) {
     try {
       const result = await authService.verifyOtp(req.body);
-      
+
       res.cookie('refreshToken', result.refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
@@ -56,7 +56,7 @@ class AuthController extends BaseController {
     try {
       const refreshToken = req.cookies?.refreshToken;
       await authService.logout(refreshToken);
-      
+
       res.cookie('refreshToken', '', {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
