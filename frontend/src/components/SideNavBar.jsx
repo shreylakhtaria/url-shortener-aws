@@ -11,7 +11,7 @@ export default function SideNavBar() {
     { name: 'Dashboard', href: '/dashboard', icon: 'dashboard' },
     { name: 'My Links', href: '/dashboard/links', icon: 'link' },
     { name: 'Analytics', href: '/dashboard/analytics', icon: 'analytics' },
-    { name: 'Settings', href: '/dashboard/profile', icon: 'settings' },
+    { name: 'Settings', href: '/dashboard/settings', icon: 'settings' },
   ];
 
   return (

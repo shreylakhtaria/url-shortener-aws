@@ -9,14 +9,6 @@ export default function LandingPage() {
           ShortLink
         </div>
         <div className="flex items-center gap-stack-md">
-          <div className="hidden md:flex gap-stack-sm text-on-surface-variant">
-            <button className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/5 transition-colors">
-              <span className="material-symbols-outlined">notifications</span>
-            </button>
-            <button className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/5 transition-colors">
-              <span className="material-symbols-outlined">settings</span>
-            </button>
-          </div>
           <Link href="/auth" className="px-4 py-2 rounded-lg bg-surface-container-high border border-white/10 hover:bg-surface-bright transition-colors font-label-md text-label-md text-on-surface flex items-center gap-2">
             <span className="material-symbols-outlined text-[18px]">person</span>
             Sign In

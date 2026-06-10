@@ -22,14 +22,11 @@ export default function TopNavBar() {
         </span>
       </div>
       <div className="flex items-center gap-4 ml-auto">
-        <button className="p-2 rounded-full text-on-surface-variant hover:text-white transition-colors hover:bg-white/5">
-          <span className="material-symbols-outlined">notifications</span>
-        </button>
-        <button className="p-2 rounded-full text-on-surface-variant hover:text-white transition-colors hover:bg-white/5">
+        <Link href="/dashboard/settings" className="p-2 rounded-full text-on-surface-variant hover:text-white transition-colors hover:bg-white/5">
           <span className="material-symbols-outlined">settings</span>
-        </button>
+        </Link>
         <div className="h-6 w-px bg-white/10 mx-2"></div>
-        <Link href="/dashboard/profile" className="font-label-md text-label-md text-primary font-medium hover:text-white transition-colors flex items-center gap-2">
+        <Link href="/dashboard/settings" className="font-label-md text-label-md text-primary font-medium hover:text-white transition-colors flex items-center gap-2">
           Profile
           <div className="w-6 h-6 rounded-full border border-white/10 bg-primary/20 flex items-center justify-center text-primary text-xs md:hidden">
             {user?.name?.[0] || 'U'}

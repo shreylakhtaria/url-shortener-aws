@@ -6,6 +6,7 @@ const authRoutes = require('./routes/authRoutes');
 const urlRoutes = require('./routes/urlRoutes');
 const analyticsRoutes = require('./routes/analyticsRoutes');
 const redirectRoutes = require('./routes/redirectRoutes');
+const userRoutes = require('./routes/userRoutes');
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.use(cookieParser());
 app.use('/api/auth', authRoutes);
 app.use('/api/urls', urlRoutes);
 app.use('/api/analytics', analyticsRoutes);
+app.use('/api/users', userRoutes);
 app.use('/', redirectRoutes); // Root level for short URLs
 
 app.use((req, res) => {

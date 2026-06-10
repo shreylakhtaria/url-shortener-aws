@@ -21,6 +21,14 @@ class UserRepository {
   async save(user) {
     return await user.save();
   }
+
+  async findById(id) {
+    return await User.findByPk(id);
+  }
+
+  async delete(id) {
+    return await User.destroy({ where: { id } });
+  }
 }
 
 module.exports = new UserRepository();

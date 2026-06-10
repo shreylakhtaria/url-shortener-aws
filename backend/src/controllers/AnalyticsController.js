@@ -1,16 +1,14 @@
-'use strict';
 const BaseController = require('./BaseController');
 const analyticsService = require('../services/AnalyticsService');
 
 class AnalyticsController extends BaseController {
-  async getAnalytics(req, res) {
+  async getDashboardStats(req, res) {
     try {
-      const { urlId } = req.params;
       const userId = req.user.id;
-      const result = await analyticsService.getUrlAnalytics(urlId, userId);
-      return this.handleSuccess(res, result, 'Analytics retrieved successfully', 200);
+      const data = await analyticsService.getAccountAnalytics(userId);
+      return this.handleSuccess(res, data, 'Analytics fetched successfully');
     } catch (error) {
-      return this.handleError(error, res, 'Analytics.getAnalytics');
+      return this.handleError(res, error, 'Failed to fetch analytics');
     }
   }
 }

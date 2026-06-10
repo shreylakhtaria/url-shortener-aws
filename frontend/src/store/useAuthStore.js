@@ -23,6 +23,11 @@ export const useAuthStore = create((set) => ({
     }
   },
 
+  updateUser: (updatedUser) => {
+    Cookies.set('user', JSON.stringify(updatedUser));
+    set({ user: updatedUser });
+  },
+
   login: async (email, password) => {
     const res = await apiClient.post('/auth/login', { email, password });
     return res.data;
