@@ -12,7 +12,7 @@ export default function AnalyticsPage() {
     // In a real app we'd fetch specific URL analytics
     const fetchAnalytics = async () => {
       try {
-        const res = await apiClient.get(`/analytics/${urlId}`);
+        const res = await apiClient.get(`/stats/${urlId}`);
         const data = res.data.data;
         
         setAnalytics({

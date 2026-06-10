@@ -33,7 +33,7 @@ app.use(cookieParser());
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/urls', urlRoutes);
-app.use('/api/analytics', analyticsRoutes);
+app.use('/api/stats', analyticsRoutes);
 app.use('/api/users', userRoutes);
 app.use('/', redirectRoutes); // Root level for short URLs
 
